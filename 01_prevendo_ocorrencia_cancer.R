@@ -86,10 +86,39 @@ modelo_knn_v1 <- knn(train = dados_treino,
                      k = 21) # k é a distância euclidiana, que verificará os 21 pontos de dados mais 
                              # próximos de cada ponto de dado
 
-# A função KNN retorna um objeto do tipo fator com as previsões para cada 
+# A função knn() retorna um objeto do tipo fator com as previsões para cada exemplo no dataset de teste
+summary(modelo_knn_v1)
 
+#### Etapa 4 - Avaliação e Interpretação do Modelo ####
 
+library(gmodels)
 
+# Criando uma tabela cruzada (Confusion Matrix) dos dados previstos x dados atuais
+# Usaremos amostra com 100 observações: length(dados_teste_labels)
+CrossTable(x = dados_teste_labels, y = modelo_knn_v1, prop.chisq = FALSE)
+
+# Interpretando os Resultados
+# A tabela cruzada mostra 4 possíveis valores, que representam os falso/verdadeiro positivo e negativo
+# Temos duas colunas listando os labels originais nos dados observados
+# Temos duas linhas listando os labels dos dados de teste
+
+# Temos:
+# Cenário 1: Célula Benigno (Observado) x Benigno (Previsto) - 61 casos - true positive 
+# Cenário 2: Célula Maligno (Observado) x Benigno (Previsto) - 00 casos - false positive
+# Cenário 3: Célula Benigno (Observado) x Maligno (Previsto) - 02 casos - false negative (o modelo errou)
+# Cenário 4: Célula Maligno (Observado) x Maligno (Previsto) - 37 casos - true negative 
+
+# Lendo a Confusion Matrix (Perspectiva de ter ou não a doença):
+
+# True Negative  = nosso modelo previu que a pessoa NÃO tinha a doença e os dados mostraram que realmente a pessoa NÃO tinha a doença
+# False Positive = nosso modelo previu que a pessoa tinha a doença e os dados mostraram que NÃO, a pessoa tinha a doença
+# False Negative = nosso modelo previu que a pessoa NÃO tinha a doença e os dados mostraram que SIM, a pessoa tinha a doença
+# True Positive = nosso modelo previu que a pessoa tinha a doença e os dados mostraram que SIM, a pessoa tinha a doença
+
+# Falso Positivo - Erro Tipo I
+# Falso Negativo - Erro Tipo II
+
+# Taxa de acerto do Modelo: 98% (acertou 98 em 100)
 
 
 
