@@ -61,15 +61,32 @@ normalizar(c(10,20,30,40,50))
 
 # Aplicação da Normalização 
 dados_norm <- as.data.frame(lapply(dados[2:31], normalizar))
+View(dados_norm)
 
+#### Etapa 3 - Treinando o Modelo com KNN ####
+# K-nearest neighbors
+install.packages('class')
+library(class)
+?knn
 
+# Divisão dos dados de treino e teste
+dados_treino <- dados_norm[1:469, ]
+dados_teste  <- dados_norm[470:569, ] 
 
+# Criação das labels para os dados de treino e teste 
+dados_treino_labels <- dados[1:469, 1]
+dados_teste_labels <- dados[470:569,1]
+length(dados_treino_labels)
+length(dados_teste_labels)
 
+# Criação do modelo preditivo
+modelo_knn_v1 <- knn(train = dados_treino,
+                     test = dados_teste,
+                     cl = dados_treino_labels,
+                     k = 21) # k é a distância euclidiana, que verificará os 21 pontos de dados mais 
+                             # próximos de cada ponto de dado
 
-
-
-
-
+# A função KNN retorna um objeto do tipo fator com as previsões para cada 
 
 
 
