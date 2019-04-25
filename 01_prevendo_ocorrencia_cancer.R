@@ -38,3 +38,52 @@ str(dados$diagnosis)
 # Verificação das proporções dos dados, em %
 round(prop.table(table(dados$diagnosis)) * 100, digits = 1)
 
+# Normalização
+# Detectamos um problema de escala entre os dados, que então precisam ser normalizados
+# O cálculo de distância feito pelo kNN é dependente das medidas de escala nos dados de entrada.
+
+# Como as variáveis numéricas estão em escalas diferentes, isso é um problema pois muitos
+# algoritimos de ML esperam receber os dados na mesma escala e em uma distribuição normal. Ou seja, com
+# média igual a 0 e desvio padrão igual a 1
+
+summary(dados[c('radius_mean','area_mean','smoothness_mean')])
+# A média e mediana de smoothness_mean são parecidas, o que indica uma distribuição normal, mas não
+# nas outras variáveis. Então é necessário aplicar uma normalização
+
+# Função de normalização
+normalizar <- function(x){
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+# Testando a função de normalização
+normalizar(c(1,2,3,4,5))
+normalizar(c(10,20,30,40,50))
+
+# Aplicação da Normalização 
+dados_norm <- as.data.frame(lapply(dados[2:31], normalizar))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
