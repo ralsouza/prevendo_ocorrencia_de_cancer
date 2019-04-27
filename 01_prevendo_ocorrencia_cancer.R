@@ -205,6 +205,28 @@ CrossTable(x = dados_teste_labels,
            y = modelo_knn_v6,
            prop.chisq = FALSE)
 # Resultado: O desempenho piorou no cenário, Célula Maligno (Observado) x Benigno (Previsto) - 05 casos
+
+# Reclassificação versão 7
+# Conforme sugestão no site https://www.quora.com/What-does-K-mean-in-KNN-algorithm
+# The best value for k is given by
+# k = square root of the length of the data.
+# (k = sqrt(length(column)))
+# Its always preferred to consider k value as an odd number to avoid the chance of having equal neighbors while prediction.
+modelo_knn_v7 <- knn(train = dados_treino,
+                     test = dados_teste,
+                     cl = dados_treino_labels,
+                     k = sqrt(length(dados_teste$area_mean)))
+
+CrossTable(x = dados_teste_labels,
+           y = modelo_knn_v7,
+           prop.chisq = FALSE)
+# Resultado: O desempenho piorou no cenário, Célula Maligno (Observado) x Benigno (Previsto) - 05 casos
+
+
+
 # Conclusão final: A versão do algoritimo com k = 21 é o que mostrou melhor desempenho das 6 versões testadas
+#                  Parece que a normalização faz o algoritimo errar mais
+
+
 
 
