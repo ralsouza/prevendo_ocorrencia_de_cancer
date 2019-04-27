@@ -38,8 +38,8 @@ str(dados$diagnosis)
 # Verificação das proporções dos dados, em %
 round(prop.table(table(dados$diagnosis)) * 100, digits = 1)
 
-# Normalização
-# Detectamos um problema de escala entre os dados, que então precisam ser normalizados
+# Padronização
+# Detectamos um problema de escala entre os dados, que então precisam ser padronizadas
 # O cálculo de distância feito pelo kNN é dependente das medidas de escala nos dados de entrada.
 
 # Como as variáveis numéricas estão em escalas diferentes, isso é um problema pois muitos
@@ -48,26 +48,25 @@ round(prop.table(table(dados$diagnosis)) * 100, digits = 1)
 
 summary(dados[c('radius_mean','area_mean','smoothness_mean')])
 # A média e mediana de smoothness_mean são parecidas, o que indica uma distribuição normal, mas não
-# nas outras variáveis. Então é necessário aplicar uma normalização
+# nas outras variáveis. Então é necessário aplicar uma padronização
 
-# Função de normalização
-normalizar <- function(x){
+# Função para padronizar as escalas
+padrinizar_escalas <- function(x){
   return((x - min(x)) / (max(x) - min(x)))
 }
 
 # Testando a função de normalização
-normalizar(c(1,2,3,4,5))
-normalizar(c(10,20,30,40,50))
+padrinizar_escalas(c(1,2,3,4,5))
+padrinizar_escalas(c(10,20,30,40,50))
 
 # Aplicação da Normalização 
-dados_norm <- as.data.frame(lapply(dados[2:31], normalizar))
+dados_norm <- as.data.frame(lapply(dados[2:31], padrinizar_escalas))
 View(dados_norm)
 
 #### Etapa 3 - Treinando o Modelo com KNN ####
 # K-nearest neighbors
 install.packages('class')
 library(class)
-?knn
 
 # Divisão dos dados de treino e teste
 dados_treino <- dados_norm[1:469, ]
@@ -80,6 +79,7 @@ length(dados_treino_labels)
 length(dados_teste_labels)
 
 # Criação do modelo preditivo
+?knn
 modelo_knn_v1 <- knn(train = dados_treino,
                      test = dados_teste,
                      cl = dados_treino_labels,
@@ -94,31 +94,47 @@ summary(modelo_knn_v1)
 library(gmodels)
 
 # Criando uma tabela cruzada (Confusion Matrix) dos dados previstos x dados atuais
+# Embora não obrigatório, neste caso as colunas são as previsões do modelo e as linhas as variáveis coletadas na fonte
 # Usaremos amostra com 100 observações: length(dados_teste_labels)
 CrossTable(x = dados_teste_labels, y = modelo_knn_v1, prop.chisq = FALSE)
 
 # Interpretando os Resultados
 # A tabela cruzada mostra 4 possíveis valores, que representam os falso/verdadeiro positivo e negativo
-# Temos duas colunas listando os labels originais nos dados observados
-# Temos duas linhas listando os labels dos dados de teste
 
 # Temos:
 # Cenário 1: Célula Benigno (Observado) x Benigno (Previsto) - 61 casos - true positive 
-# Cenário 2: Célula Maligno (Observado) x Benigno (Previsto) - 00 casos - false positive
-# Cenário 3: Célula Benigno (Observado) x Maligno (Previsto) - 02 casos - false negative (o modelo errou)
+# Cenário 2: Célula Benigno (Observado) x Maligno (Previsto) - 00 casos - false positive
+# Cenário 3: Célula Maligno (Observado) x Benigno (Previsto) - 02 casos - false negative (o modelo errou)
+#            As prováveis causas deste erro, poderia ser valores outliers ou outros problemas de pré-processamento
 # Cenário 4: Célula Maligno (Observado) x Maligno (Previsto) - 37 casos - true negative 
 
 # Lendo a Confusion Matrix (Perspectiva de ter ou não a doença):
 
-# True Negative  = nosso modelo previu que a pessoa NÃO tinha a doença e os dados mostraram que realmente a pessoa NÃO tinha a doença
-# False Positive = nosso modelo previu que a pessoa tinha a doença e os dados mostraram que NÃO, a pessoa tinha a doença
-# False Negative = nosso modelo previu que a pessoa NÃO tinha a doença e os dados mostraram que SIM, a pessoa tinha a doença
-# True Positive = nosso modelo previu que a pessoa tinha a doença e os dados mostraram que SIM, a pessoa tinha a doença
+# True Negative  = nosso modelo previu que a pessoa NÃO tinha a doença e os dados mostraram que 
+#                  realmente a pessoa NÃO tinha a doença
+# False Positive = nosso modelo previu que a pessoa tinha a doença e os dados mostraram que NÃO,
+#                  a pessoa tinha a doença
+# False Negative = nosso modelo previu que a pessoa NÃO tinha a doença e os dados mostraram que SIM,
+#                  a pessoa tinha a doença
+# True Positive = nosso modelo previu que a pessoa tinha a doença e os dados mostraram que SIM,
+#                 a pessoa tinha a doença
 
 # Falso Positivo - Erro Tipo I
 # Falso Negativo - Erro Tipo II
 
 # Taxa de acerto do Modelo: 98% (acertou 98 em 100)
+
+#### Etapa 5 - Otimizando o Desempenho do Modelo ####
+
+# Normalizando a escala do score-z, centralizando o score-z
+# -1 para retirar a variável alvo, estamos usando o dataset original invés do normalizado, pois 
+# alteramos a estratégia de pré-processamento
+?scale
+dados_z <- as.data.frame(scale(dados[-1]))
+
+# Checar se a tranformação ocorreu com sucesso
+summary(dados_z$area_mean)
+
 
 
 
