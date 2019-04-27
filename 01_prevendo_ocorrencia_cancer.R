@@ -133,13 +133,33 @@ CrossTable(x = dados_teste_labels, y = modelo_knn_v1, prop.chisq = FALSE)
 dados_z <- as.data.frame(scale(dados[-1]))
 
 # Checar se a tranformação ocorreu com sucesso
+# Média igual à zero, ok
 summary(dados_z$area_mean)
 
+# Divisão dos dados entre treino e teste
+dados_treino <- dados_z[1:469, ]
+dados_teste  <- dados_z[470:569, ]
 
+dados_treino_labels <- dados[1:469, 1]
+dados_teste_labels <- dados[470:569, 1]
 
+# Reclassificação
+modelo_knn_v2 <- knn(train = dados_treino,
+                     test = dados_teste,
+                     cl = dados_treino_labels,
+                     k = 21)
 
+# Compilar Cross Table 
+CrossTable(x = dados_teste_labels,
+           y = modelo_knn_v2,
+           prop.chisq = FALSE)
 
+# Parece que as alterações pioraram os erros
 
+# Experimento, mudar os valores de k
+# Criar a versão 3 com k = 20, k = 5 ou k = 30
+# Voltar para a versão 1 com os dados normalizados e mudar apenas o k 
+# Comparar as versões dos modelos e analisar qual teve melhor acurácia
 
 
 
