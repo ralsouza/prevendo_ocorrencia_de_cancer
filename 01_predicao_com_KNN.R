@@ -1,4 +1,5 @@
 # Prevendo a ocorrência de câncer mama
+# Algoritimo KNN
 
 setwd('/Users/ls_rafael/Documents/GitHub/prevendo_ocorrencia_de_cancer')
 
@@ -220,10 +221,7 @@ modelo_knn_v7 <- knn(train = dados_treino,
 CrossTable(x = dados_teste_labels,
            y = modelo_knn_v7,
            prop.chisq = FALSE)
-# Resultado: O desempenho piorou no cenário, Célula Maligno (Observado) x Benigno (Previsto) - 05 casos
-
-
-
+# Resultado: Ainda assim o resultado não foi satisfatório
 # Conclusão final: A versão do algoritimo com k = 21 é o que mostrou melhor desempenho das 6 versões testadas
 #                  Parece que a normalização faz o algoritimo errar mais
 
