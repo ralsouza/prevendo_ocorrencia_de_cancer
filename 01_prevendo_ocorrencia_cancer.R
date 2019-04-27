@@ -161,11 +161,50 @@ CrossTable(x = dados_teste_labels,
 # Voltar para a versão 1 com os dados normalizados e mudar apenas o k 
 # Comparar as versões dos modelos e analisar qual teve melhor acurácia
 
+# Reclassificação versão 3, k = 20
+modelo_knn_v3 <- knn(train = dados_treino,
+                     test = dados_teste,
+                     cl = dados_treino_labels,
+                     k = 20)
 
+CrossTable(x = dados_teste_labels,
+           y = modelo_knn_v3,
+           prop.chisq = FALSE)
+# Resultado: O desempenho piorou no cenário, Célula Maligno (Observado) x Benigno (Previsto) - 04 casos
 
+# Reclassificação versão 4, k = 5
+modelo_knn_v4 <- knn(train = dados_treino,
+                     test = dados_teste,
+                     cl = dados_treino_labels,
+                     k = 5)
 
+CrossTable(x = dados_teste_labels,
+           y = modelo_knn_v4,
+           prop.chisq = FALSE)
+# Resultado: O desempenho piorou no cenário, Célula Maligno (Observado) x Benigno (Previsto) - 02 casos
+#            Célula Benigno (Observado) x Maligno (Previsto) - 01 caso
 
+# Reclassificação versão 5, k = 30
+modelo_knn_v5 <- knn(train = dados_treino,
+                     test = dados_teste,
+                     cl = dados_treino_labels,
+                     k = 5)
 
+CrossTable(x = dados_teste_labels,
+           y = modelo_knn_v5,
+           prop.chisq = FALSE)
+# Resultado: O desempenho piorou no cenário, Célula Maligno (Observado) x Benigno (Previsto) - 04 casos
 
+# Reclassificação versão 6, k = 60
+modelo_knn_v6 <- knn(train = dados_treino,
+                     test = dados_teste,
+                     cl = dados_treino_labels,
+                     k = 60)
+
+CrossTable(x = dados_teste_labels,
+           y = modelo_knn_v6,
+           prop.chisq = FALSE)
+# Resultado: O desempenho piorou no cenário, Célula Maligno (Observado) x Benigno (Previsto) - 05 casos
+# Conclusão final: A versão do algoritimo com k = 21 é o que mostrou melhor desempenho das 6 versões testadas
 
 
