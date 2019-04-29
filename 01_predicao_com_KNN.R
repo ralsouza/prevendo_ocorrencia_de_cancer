@@ -224,7 +224,3 @@ CrossTable(x = dados_teste_labels,
 # Resultado: Ainda assim o resultado não foi satisfatório
 # Conclusão final: A versão do algoritimo com k = 21 é o que mostrou melhor desempenho das 6 versões testadas
 #                  Parece que a normalização faz o algoritimo errar mais
-
-
-
-
