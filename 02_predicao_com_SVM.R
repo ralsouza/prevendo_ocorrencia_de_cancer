@@ -33,3 +33,45 @@ target_index <- grep('diag',names(dados)) # grep usado para pesquisar a variáve
 # plano linear que pode ser desenhado
 install.packages('e1071')
 library(e1071)
+?svm
+
+modelo_svm_v1 <- svm(diagnosis ~ .,
+                     data = dados_treino,
+                     type = 'C-classification',
+                     kernel = 'radial')
+
+#### Etapa 3 - Predições ####
+pred_treino <- predict(modelo_svm_v1, dados_treino)
+# O percentual não aumentou muito em relação ao KNN, talvez este seja o limite máximo
+# de acertos do dataset
+
+# Percentual de predições corretas com dataset de treino
+mean(pred_treino == dados_treino$diagnosis)
+
+# Predições com os dados de teste
+pred_teste <- predict(modelo_svm_v1, dados_teste)
+
+# Percentual de predições corretas com dataset de teste
+mean(pred_teste == dados_teste$diagnosis)
+# Com os novos dados, o modelo aumentou um pouco mais os acertos
+
+# Confusion Matrix
+table(pred_teste, dados_teste$diagnosis)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
