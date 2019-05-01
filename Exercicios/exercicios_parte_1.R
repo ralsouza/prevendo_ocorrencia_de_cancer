@@ -24,6 +24,8 @@ y1
 hist(y1)
 
 # Crie um plot do relacionamento de x e y1
+cor(x,y1)
+plot(x,y1)
 
 
 # Crie um modelo de regressão para as duas variáveis x e y1
