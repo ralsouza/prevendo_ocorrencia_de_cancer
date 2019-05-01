@@ -1,19 +1,15 @@
-# Lista de Exercícios Parte 1 - Capítulo 11
-
-# Obs: Caso tenha problemas com a acentuação, consulte este link:
-# https://support.rstudio.com/hc/en-us/articles/200532197-Character-Encoding
+# Lista de Exercícios Parte 1
 
 # Configurando o diretório de trabalho
 # Coloque entre aspas o diretório de trabalho que você está usando no seu computador
 # Não use diretórios com espaço no nome
-setwd("C:/FCD/BigDataRAzure/Cap12")
+setwd("/Users/ls_rafael/Documents/GitHub/prevendo_ocorrencia_de_cancer/Exercicios")
 getwd()
 
 
 ## Exercício 1 - Massa de dados aleatória
 
-# Criando a massa de dados (apesar de aleatória, y possui 
-# uma relação com os dados de x)
+# Criando a massa de dados (apesar de aleatória, y possui uma relação com os dados de x)
 x <- seq(0, 100)
 y <- 2 * x + 35
 
@@ -22,6 +18,7 @@ x
 y
 
 # Gerando uma distribuição normal
+?rnorm
 y1 <- y + rnorm(101, 0, 50)
 y1
 hist(y1)
