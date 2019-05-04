@@ -24,12 +24,20 @@ y1
 hist(y1)
 
 # Crie um plot do relacionamento de x e y1
+?plot
+
 cor(x,y1)
-plot(x,y1, main = 'Correlação entre x e y1')
 
-?pairs
-pairs(x,y1)
+plot(x, y1, pch = 19, main = 'Correlação entre X e Y1', xlab = 'x', ylab = 'y1')
 
+# Unindo as variáveis em um data frame
+cor(data.frame(x,y1)) # Relação forte de 77.29%
+
+pairs(data.frame(x,y1))
+
+?corrplot
+corrplot(cor(data.frame(x,y1)),method = 'number')
+corrplot(cor(data.frame(x,y1)),method = 'pie')
 
 # Crie um modelo de regressão para as duas variáveis x e y1
 
