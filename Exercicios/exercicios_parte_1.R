@@ -53,9 +53,10 @@ b <- modelo_xy1$coefficients[2]
 y2 <- a + b*x
 
 # Visualize a linha de regressão
-plot(df_xy1)
-lines(y2)
+?lines
 
+plot(df_xy1)
+lines(y2, x, lwd=3)
 
 # Simulando outras possíveis linhas de regressão
 y3 <- (y2[51]-50*(b-1))+(b-1)*x
@@ -65,28 +66,41 @@ lines(x,y3,lty=3)
 lines(x,y4,lty=3)
 lines(x,y5,lty=3)
 
-
 ## Exercício 2 - Pesquisa sobre idade e tempo de reação
 
 # Criando os dados
-Idade <- c(9,13,14,21,15,18,20,8,14,23,16,21,10,12,20,
-           9,13,5,15,21)
+Idade <- c(9,13,14,21,15,18,20,8,14,23,
+           16,21,10,12,20,9,13,5,15,21)
 
-Tempo <- c(17.87,13.75,12.72,6.98,11.01,10.48,10.19,19.11,
-           12.72,0.45,10.67,1.59,14.91,14.14,9.40,16.23,
-           12.74,20.64,12.34,6.44)
+Tempo <- c(17.87,13.75,12.72,6.98,11.01,10.48,10.19,
+           19.11,12.72,0.45,10.67,1.59,14.91,14.14,
+           9.40,16.23,12.74,20.64,12.34,6.44)
+
+# Unindo os vetores em um data frame
+df_ex2 <- data.frame(Idade,Tempo)
 
 # Crie um Gráfico de Dispersão (ScatterPlot)
+plot(df_ex2,main = 'Pesquisa Sobre Idade e Tempo de Reação', ylab = 'Tempo de Reação', xlab = 'Idade')
 
+# Checar correlação
+cor(df_ex2) # Forte correlação negativa de -93.95%
 
 # Crie um modelo de regressão
+modelo_ex2 <- lm(Tempo ~ Idade, data = df_ex2)
 
+summary(modelo_ex2)
 
 # Calcule a reta de regressão
+# y <- a + b*x
 
+# Extração dos coeficientes
+a <- modelo_ex2$coefficients[1]
+b <- modelo_ex2$coefficients[2]
+
+rt <- a + b * df_ex2$Idade
 
 # Crie o gráfico da reta
-
+lines(rt,Idade)
 
 
 # Exercício 3 - Relação entre altura e peso
