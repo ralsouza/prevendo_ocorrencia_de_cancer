@@ -115,17 +115,27 @@ plot(alturas, pesos, pch = 16, cex = 1.3, col = "blue",
      xlab = "Altura (cm)")
 
 # Crie o modelo de regressão
+cor(alturas, pesos)
 
+df_ex3 <- data.frame(alturas,pesos)
+
+modelo_ex3 <- lm(df_ex3$pesos ~ df_ex3$alturas, data = df_ex3)
 
 # Visualizando o modelo
-
+summary(modelo_ex3)
 
 # Gere a linha de regressão
+a <- modelo_ex3$coefficients[1]
+b <- modelo_ex3$coefficients[2]
 
+rt <- a + b * df_ex3$pesos
+
+abline(a,b)
 
 # Faça as previsões de pesos com base na nova lista de alturas
 alturas2 = data.frame(c(179, 152, 134, 197, 131, 178, 185, 162, 155, 172))
 
+predicao_pesos <- predict(modelo_ex3, alturas2)
 
 # Plot
 plot(alturas, pesos, pch = 16, cex = 1.3, 
@@ -148,4 +158,4 @@ for (k in 1: num)
 
 # Gerando gráficos com a distribuição dos resíduos
 par(mfrow = c(2,2))
-plot(modelo)
+plot(modelo_ex3)
