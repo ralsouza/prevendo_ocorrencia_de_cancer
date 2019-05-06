@@ -6,7 +6,6 @@
 setwd("/Users/ls_rafael/Documents/GitHub/prevendo_ocorrencia_de_cancer/Exercicios")
 getwd()
 
-
 ## Exercício 1 - Massa de dados aleatória
 
 # Criando a massa de dados (apesar de aleatória, y possui uma relação com os dados de x)
@@ -128,14 +127,17 @@ summary(modelo_ex3)
 a <- modelo_ex3$coefficients[1]
 b <- modelo_ex3$coefficients[2]
 
-rt <- a + b * df_ex3$pesos
-
+# Com abline é possível plotar a reta apenas com os coeficientes de regressão
 abline(a,b)
 
 # Faça as previsões de pesos com base na nova lista de alturas
 alturas2 = data.frame(c(179, 152, 134, 197, 131, 178, 185, 162, 155, 172))
 
 predicao_pesos <- predict(modelo_ex3, alturas2)
+
+# Interpretação do resultado
+# Na primeira linha de resultados: Para uma pessoa de 1.79cm é provável que tenha 79.64Kg
+# E assim por diante
 
 # Plot
 plot(alturas, pesos, pch = 16, cex = 1.3, 
@@ -144,7 +146,7 @@ plot(alturas, pesos, pch = 16, cex = 1.3,
      ylab = "Peso (kg)", 
      xlab = "Altura (cm)")
 
-# Construindo a linha de regressão
+# Construindo a linha de regressão, diretamente recebendo os coeficientes da função lm
 abline(lm(pesos ~ alturas)) 
 
 # Obtendo o tamanho de uma das amostras de dados
