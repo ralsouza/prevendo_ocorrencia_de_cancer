@@ -26,6 +26,6 @@ str(df)
 any(is.na(df))
 
 
-cor(df$age,df$sex)
+
 
 
