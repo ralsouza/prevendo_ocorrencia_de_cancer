@@ -15,6 +15,7 @@ setwd("/Users/ls_rafael/Documents/GitHub/prevendo_ocorrencia_de_cancer/Exercicio
 library(ggplot2)
 library(ggthemes)
 library(dplyr)
+library(psych)
 
 # Carregando o dataset
 df <- read.csv2('estudantes.csv')
@@ -24,6 +25,10 @@ head(df)
 summary(df)
 str(df)
 any(is.na(df))
+
+# Checagem da correlação entre as variáveis numéricas
+cor.plot(df[c('age','Medu','Fedu','traveltime','studytime','failures','famrel',
+              'freetime','goout','Dalc','Walc','health','absences','G1','G2','G3')],numbers = TRUE)
 
 
 
