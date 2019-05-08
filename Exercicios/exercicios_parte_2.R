@@ -12,6 +12,7 @@ setwd("/Users/ls_rafael/Documents/GitHub/prevendo_ocorrencia_de_cancer/Exercicio
 # install.packages("ggplot2")
 # install.packages("ggthemes")
 # install.packages("dplyr")
+  install.packages('sjPlot')
 library(ggplot2)
 library(ggthemes)
 library(dplyr)
@@ -30,7 +31,10 @@ any(is.na(df))
 cor.plot(df[c('age','Medu','Fedu','traveltime','studytime','failures','famrel',
               'freetime','goout','Dalc','Walc','health','absences','G1','G2','G3')],numbers = TRUE)
 
+# Conversão das variáveis categórias para tipo numérico
+df_num <- as.data.frame(lapply(df,as.integer))
 
+cor.plot(df_num[c('studytime','G1','G2','G3')], numbers = TRUE)
 
-
+ggplot(df,aes(sex,G1,G2)) + geom_point()
 
