@@ -29,6 +29,11 @@ any(is.na(df))
 # Checagem da correlação entre as variáveis numéricas
 cor.plot(df[c('age','Medu','Fedu','traveltime','studytime','failures','famrel',
               'freetime','goout','Dalc','Walc','health','absences','G1','G2','G3')],numbers = TRUE)
+# Análise: A correlação entre as variáveis G1, G2 e G3 possuem correlação positiva forte, em torno de 80~85%
+#          Também existe correlação negativa média/moderada entre as variáveis failure e G1, G2 e G3, em torno de 35~36%
+#          Correlação positiva média/moderada entre as variáveis Medu e Fedu, de 62%
+#          Correlação positiva média/moderada entre as variáveis Dalc e Walc, 65%
+#          E uma correlação positiva média/moderada entre as variáveis Walc e goout, 42%
 
-ggplot(df,aes(sex,G1,G2)) + geom_point()
+ggplot(df,aes(G3)) + geom_histogram()
 
