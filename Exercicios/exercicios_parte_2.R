@@ -20,7 +20,7 @@ library(psych)
 # Carregando o dataset
 df <- read.csv2('estudantes.csv')
 
-# Explorando os dados
+#### 1. Análise Exploratória ####
 head(df)
 summary(df)
 str(df)
@@ -36,14 +36,17 @@ cor.plot(df[c('age','Medu','Fedu','traveltime','studytime','failures','famrel',
 #          Correlação positiva média/moderada entre as variáveis Dalc e Walc, 65%
 #          E uma correlação positiva média/moderada entre as variáveis Walc e goout, 42%
 
-ggplot(df,aes(G1)) + geom_histogram(binwidth = 1)
-ggplot(df,aes(G2)) + geom_histogram(binwidth = 1)
-ggplot(df,aes(G3)) + geom_histogram(binwidth = 1)
+# Verificação por Histograma
+# Análise das avaliações G1 e G2
+ggplot(df,aes(G1, fill=..count..)) + geom_histogram(bins = 20)
+ggplot(df,aes(G2, fill=..count..)) + geom_histogram(bins = 20)
 
-# Análise: Houveram quase 40 notas 0 na G3, o que será que houve?
+# Análise da G3, variável alvo
+ggplot(df,aes(G3, fill=..count..)) + geom_histogram(bins = 20)
+
+# Análise da G3: Houveram quase 40 notas 0 na G3, o que será que houve?
 
 
-ggplot(df,aes(G3, fill = romantic)) + geom_histogram(binwidth = 1)
 
 
 
