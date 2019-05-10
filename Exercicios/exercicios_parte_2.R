@@ -44,7 +44,8 @@ ggplot(df,aes(G2, fill=..count..)) + geom_histogram(bins = 20)
 # Análise da G3, variável alvo
 ggplot(df,aes(G3, fill=..count..)) + geom_histogram(bins = 20)
 
-# Análise da G3: Houveram quase 40 notas 0 na G3, o que será que houve?
+# Análise da G3: Houveram quase 40 notas 0 na G3, o que será que houve? 
+#                Inclusive a média das notas está bem mais alta que nas outras avaliações
 
 
 
