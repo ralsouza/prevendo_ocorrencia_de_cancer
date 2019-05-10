@@ -45,7 +45,14 @@ ggplot(df,aes(G2, fill=..count..)) + geom_histogram(bins = 20)
 ggplot(df,aes(G3, fill=..count..)) + geom_histogram(bins = 20)
 
 # Análise da G3: Houveram quase 40 notas 0 na G3, o que será que houve? 
-#                Inclusive a média das notas está bem mais alta que nas outras avaliações
+#                Inclusive a quantidade de notas 9 está bem mais alta que nas outras avaliações
+
+#### 2. Criação do Modelo ####
+# Divisão dos dados entre treino e teste
+df$index <- 1:nrow(df)
+df_treino <- df %>% dplyr::sample_frac(.75)
+df_teste <- dplyr::anti_join(df, df_treino, by = 'index')
+
 
 
 
