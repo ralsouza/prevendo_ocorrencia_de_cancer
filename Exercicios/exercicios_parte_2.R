@@ -44,18 +44,65 @@ ggplot(df,aes(G2, fill=..count..)) + geom_histogram(bins = 20)
 # Análise da G3, variável alvo
 ggplot(df,aes(G3, fill=..count..)) + geom_histogram(bins = 20)
 
+# Análise da das faltas (absences), pois no modelo_v1 identificamos que o modelo avaliou esta variável
+# como significativa
+ggplot(df,aes(absences, fill=..count..)) + geom_histogram(bins = 20)
+
 # Análise da G3: Houveram quase 40 notas 0 na G3, o que será que houve? 
 #                Inclusive a quantidade de notas 9 está bem mais alta que nas outras avaliações
 
-#### 2. Criação do Modelo ####
+#### 2. Criação e Treinamento do Modelo ####
 # Divisão dos dados entre treino e teste
+?dplyr::sample_frac
+?dplyr::anti_join
+
+# Inclusão do indice para divisão
 df$index <- 1:nrow(df)
+
+# Divisão do data frame
 df_treino <- df %>% dplyr::sample_frac(.75)
 df_teste <- dplyr::anti_join(df, df_treino, by = 'index')
 
+# Remoção do indice nos novos data frames
+df_treino$index <- NULL
+df_teste$index <- NULL
 
+# Treino do modelo_v1
+modelo_v1 <- lm(G3 ~., data = df_treino)
+summary(modelo_v1) # Precisão: 83.57%
 
+# Conforme o resumo do modelo_v1, a versão abaixo segue apenas com as variáveis significantes ao modelo
+modelo_v2 <- lm(G3 ~ age + romantic + famrel + Walc + absences + G1 + G2, data = df_treino)
+summary(modelo_v2) # Precisão: 84.08%
 
+# Removendo a variável menos significante Walc
+modelo_v4 <- lm(G3 ~ age + romantic + famrel + absences + G1 + G2, data = df_treino)
+summary(modelo_v4) # Precisão: 84.08%
+
+# Removendo as variáveis menos significante age, romantic e famrel
+modelo_v5 <- lm(G3 ~ absences + G1 + G2, data = df_treino)
+summary(modelo_v5) # Precisão: 83.32%
+
+# Removendo a variávei menos significante G1
+modelo_v6 <- lm(G3 ~ absences + G2, data = df_treino)
+summary(modelo_v6) # Precisão: 83.00%
+
+# Remoção de romantic
+modelo_v7 <- lm(G3 ~ age + famrel + absences + G1 + G2, data = df_treino)
+summary(modelo_v7) # Precisão: 83.89%
+
+# O modelo_v4 apresentou o melhor desempenho, pois aprensentou a mesma precisão que modelo_v2 
+# possuindo uma menos
+
+# Análise dos resíduos do modelo_v4
+res_modelo_v4 <- as.data.frame(resid(modelo_v4))
+
+plot(df_treino$G3, res_modelo_v4,
+     ylab = 'Resíduos', xlab = 'G3',
+     main = 'Análise de Resíduos no modelo_v4')
+abline(0,0) # Linha de horizonte
+
+plot(df_treino$G3)
 
 
 
