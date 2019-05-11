@@ -97,12 +97,20 @@ summary(modelo_v7) # Precisão: 83.89%
 # Análise dos resíduos do modelo_v4
 res_modelo_v4 <- as.data.frame(resid(modelo_v4))
 
-plot(df_treino$G3, res_modelo_v4,
+colnames(res_modelo_v4) <- 'res'
+
+plot(df_treino$G3, fitted(res_modelo_v4),
      ylab = 'Resíduos', xlab = 'G3',
      main = 'Análise de Resíduos no modelo_v4')
 abline(0,0) # Linha de horizonte
+# A média dos resíduos está próxima de zero, o que é bom
 
-plot(df_treino$G3)
+ggplot(res_modelo_v4,aes(res, fill = ..count..)) + geom_histogram(bins = 30)
+# Aqui mostram notas previstas abaixo de zero, o que não é possível. É necessário investigar mais
+
+par(mfrow = c(2,2))
+plot(modelo_v4)
+
 
 
 
