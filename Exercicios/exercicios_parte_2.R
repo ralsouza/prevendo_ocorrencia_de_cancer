@@ -19,6 +19,7 @@ library(psych)
 
 # Carregando o dataset
 df <- read.csv2('estudantes.csv')
+df2 <- read.csv2('estudantes.csv')
 
 #### 1. Análise Exploratória ####
 head(df)
@@ -58,60 +59,86 @@ ggplot(df,aes(absences, fill=..count..)) + geom_histogram(bins = 20)
 
 # Inclusão do indice para divisão
 df$index <- 1:nrow(df)
+df2$index <- 1:nrow(df2)
 
 # Divisão do data frame
 df_treino <- df %>% dplyr::sample_frac(.75)
+df_treino2 <- df %>% dplyr::sample_frac(.70)
+
 df_teste <- dplyr::anti_join(df, df_treino, by = 'index')
+df_teste2 <- dplyr::anti_join(df, df_treino2, by = 'index')
 
 # Remoção do indice nos novos data frames
 df_treino$index <- NULL
+df_treino2$index <- NULL
+
 df_teste$index <- NULL
+df_teste2$index <- NULL
 
 # Treino do modelo_v1
 modelo_v1 <- lm(G3 ~., data = df_treino)
+modelo_v1.2 <- lm(G3 ~., data = df_treino2)
+
 summary(modelo_v1) # Precisão: 83.57%
+summary(modelo_v1.2) # Precisão: 84.26%
 
 # Conforme o resumo do modelo_v1, a versão abaixo segue apenas com as variáveis significantes ao modelo
 modelo_v2 <- lm(G3 ~ age + romantic + famrel + Walc + absences + G1 + G2, data = df_treino)
+modelo_v2.2 <- lm(G3 ~ age + romantic + famrel + Walc + absences + G1 + G2, data = df_treino2)
+
 summary(modelo_v2) # Precisão: 84.08%
+summary(modelo_v2.2) # Precisão: 82.55%
 
 # Removendo a variável menos significante Walc
 modelo_v4 <- lm(G3 ~ age + romantic + famrel + absences + G1 + G2, data = df_treino)
+modelo_v4.2 <- lm(G3 ~ age + romantic + famrel + absences + G1 + G2, data = df_treino2)
+
 summary(modelo_v4) # Precisão: 84.08%
+summary(modelo_v4.2) # Precisão: 82.47%
 
 # Removendo as variáveis menos significante age, romantic e famrel
 modelo_v5 <- lm(G3 ~ absences + G1 + G2, data = df_treino)
+modelo_v5.2 <- lm(G3 ~ absences + G1 + G2, data = df_treino2)
+
 summary(modelo_v5) # Precisão: 83.32%
+summary(modelo_v5.2) # Precisão: 81.69%
 
 # Removendo a variávei menos significante G1
 modelo_v6 <- lm(G3 ~ absences + G2, data = df_treino)
+modelo_v6.2 <- lm(G3 ~ absences + G2, data = df_treino2)
+
 summary(modelo_v6) # Precisão: 83.00%
+summary(modelo_v6.2) # Precisão: 81.27%
 
 # Remoção de romantic
 modelo_v7 <- lm(G3 ~ age + famrel + absences + G1 + G2, data = df_treino)
+modelo_v7.1 <- lm(G3 ~ age + famrel + absences + G1 + G2, data = df_treino2)
+
 summary(modelo_v7) # Precisão: 83.89%
+summary(modelo_v7.1) # Precisão: 82.37%
 
 # O modelo_v4 apresentou o melhor desempenho, pois aprensentou a mesma precisão que modelo_v2 
 # possuindo uma menos
 
 # Análise dos resíduos do modelo_v4
 res_modelo_v4 <- as.data.frame(resid(modelo_v4))
+res_modelo_v1.2 <- as.data.frame(resid(modelo_v1.2))
 
 colnames(res_modelo_v4) <- 'res'
+colnames(res_modelo_v1.2) <- 'res'
 
-plot(df_treino$G3, fitted(res_modelo_v4),
-     ylab = 'Resíduos', xlab = 'G3',
-     main = 'Análise de Resíduos no modelo_v4')
-abline(0,0) # Linha de horizonte
-# A média dos resíduos está próxima de zero, o que é bom
-
+dev.off()
 ggplot(res_modelo_v4,aes(res, fill = ..count..)) + geom_histogram(bins = 30)
+ggplot(res_modelo_v1.2,aes(res, fill = ..count..)) + geom_histogram(bins = 30)
 # Aqui mostram notas previstas abaixo de zero, o que não é possível. É necessário investigar mais
+
+# Checar os resíduos com plot de diagnóstico
+# Plot Diagnostics for an lm Object
+?plot.lm
 
 par(mfrow = c(2,2))
 plot(modelo_v4)
-
-
+plot(modelo_v1.2)
 
 
 
