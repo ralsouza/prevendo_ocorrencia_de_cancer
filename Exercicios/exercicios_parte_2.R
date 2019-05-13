@@ -75,11 +75,18 @@ df_treino1$index <- NULL
 df_teste1$index <- NULL
 
 # Modelo V2
-df_treino2 <- df %>% dplyr::sample_frac(.80)
+df_treino2 <- df %>% dplyr::sample_frac(.60)
 df_teste2 <- dplyr::anti_join(df, df_treino2, by = 'index')
 # Remoção do indice
 df_treino2$index <- NULL
 df_teste2$index <- NULL
+
+# Modelo V3
+df_treino3 <- df %>% dplyr::sample_frac(.65)
+df_teste3 <- dplyr::anti_join(df, df_treino3, by = 'index')
+# Remoção do indice
+df_treino3$index <- NULL
+df_teste3$index <- NULL
 
 
 # Treinamento dos modelos
@@ -88,7 +95,7 @@ modelo_v1 <- lm(G3 ~., data = df_treino1)
 sumario_modelo_v1 <- summary(modelo_v1)
 r_squared_v1 <- sumario_modelo_v1$r.squared
 fstatistics_v1 <- sumario_modelo_v1$fstatistic
-sumario_v1
+sumario_modelo_v1
 
 # Modelo V2
 modelo_v2 <- lm(G3 ~., data = df_treino2)
@@ -97,6 +104,12 @@ r_squared_v2 <- sumario_modelo_v2$r.squared
 fstatistics_v2 <- sumario_modelo_v2$fstatistic
 sumario_modelo_v2
 
+# Modelo V3
+modelo_v3 <- lm(G3 ~., data = df_treino3)
+sumario_modelo_v3 <- summary(modelo_v3)
+r_squared_v3 <- sumario_modelo_v3$r.squared
+fstatistics_v3 <- sumario_modelo_v3$fstatistic
+sumario_modelo_v3
 
 
 # Análise dos resíduos de treino
@@ -104,13 +117,26 @@ sumario_modelo_v2
 res_modelo_v1 <- as.data.frame(resid(modelo_v1))
 colnames(res_modelo_v1) <- 'res'
 
+dev.off()
+ggplot(res_modelo_v1, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
+# O modelo previu notas abaixo de zero, o que não é possível
+
 # Modelo V2
 res_modelo_v2 <- as.data.frame(resid(modelo_v2))
 colnames(res_modelo_v2) <- 'res'
 
 dev.off()
-ggplot(res_modelo_v1, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
+ggplot(res_modelo_v3, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
 # O modelo previu notas abaixo de zero, o que não é possível
+
+# Modelo V3
+res_modelo_v3 <- as.data.frame(resid(modelo_v3))
+colnames(res_modelo_v3) <- 'res'
+
+dev.off()
+ggplot(res_modelo_v2, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
+# O modelo previu notas abaixo de zero, o que não é possível
+
 
 # Medidas de Diagnóstico
 # Plot Diagnostics for an lm Object
@@ -118,6 +144,7 @@ ggplot(res_modelo_v1, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
 par(mfrow = c(2,2))
 plot(modelo_v1)
 plot(modelo_v2)
+plot(modelo_v3)
 
 # https://data.library.virginia.edu/diagnostic-plots/
 # http://analyticspro.org/2016/03/07/r-tutorial-how-to-use-diagnostic-plots-for-regression-models/ 
@@ -143,7 +170,7 @@ sse_v1 <- sum((resultados_v1$Predito - resultados_v1$Observado)^2)
 sst_v1 <- sum((mean(df$G3) - resultados_v1$Observado)^2)
 R2_v1 <- 1-sse_v1/sst_v1
 R2_v1
-# Desempenho modelo_v1: 0.7646619
+# Desempenho modelo_v1: 0.8306656
 
 # Predicao_v2
 predicao_v2 <- predict(modelo_v2, df_teste2)
@@ -157,7 +184,19 @@ sse_v2 <- sum((resultados_v2$Predito - resultados_v2$Observado)^2)
 sst_v2 <- sum((mean(df$G3) - resultados_v2$Observado)^2)
 R2_v2 <- 1-sse_v2/sst_v2
 R2_v2
-# Desempenho modelo_v2: 0.7767996
+# Desempenho modelo_v2: 0.734633
 
+# Predicao_v3
+predicao_v3 <- predict(modelo_v3, df_teste3)
+sumario_predicao_v3 <- summary(predicao_v3)
+resultados_v3 <- cbind(predicao_v3, df_teste3$G3)
+colnames(resultados_v3) <- c('Predito','Observado')
+resultados_v3 <- as.data.frame(resultados_v3)
 
+# Desempenho do Modelo
+sse_v3 <- sum((resultados_v3$Predito - resultados_v3$Observado)^2)
+sst_v3 <- sum((mean(df$G3) - resultados_v3$Observado)^2)
+R2_v3 <- 1-sse_v3/sst_v3
+R2_v3
+# Desempenho modelo_v2: 0.7981727
 
