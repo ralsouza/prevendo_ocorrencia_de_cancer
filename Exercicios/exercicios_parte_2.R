@@ -143,7 +143,7 @@ summary(modelo_v7.1) # Precisão: 82.37%
 
 # O modelo_v1.3 apresentou o melhor desempenho
 
-# Análise dos resíduos do modelo_v4
+# Análise dos resíduos
 res_modelo_v4 <- as.data.frame(resid(modelo_v4))
 res_modelo_v1.2 <- as.data.frame(resid(modelo_v1.2))
 res_modelo_v1.3 <- as.data.frame(resid(modelo_v1.3))
