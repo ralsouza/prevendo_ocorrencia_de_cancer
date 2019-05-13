@@ -121,9 +121,26 @@ sumario_modelo_v3
 # Modelo V4
 modelo_v4 <- lm(G3 ~., data = df_treino4)
 sumario_modelo_v4 <- summary(modelo_v4)
-r_squared_v4 <- sumario_modelo_v4$r.squared
+r_squared_v4 <- sumario_modelo_v4
 fstatistics_v4 <- sumario_modelo_v4$fstatistic
 sumario_modelo_v4
+
+# Para tentar melhorar o desempenho deste modelo, 
+# serão selecionados as variáveis com nível de significancia menor que 1%
+nvl_sig_lt1 <- sumario_modelo_v4$coefficients[-1,4] < 0.001
+nvl_sig_lt1 <- names(nvl_sig_lt1)[nvl_sig_lt1 == TRUE]
+nvl_sig_lt1 <- c('G3', nvl_sig_lt1)
+df_treino4_nvl_sig_lt1 <- df_treino4[nvl_sig_lt1]
+
+# Rodar novamente o modelo_v4 com o novo data set reduzido
+modelo_v4.1 <- lm(G3 ~., data = df_treino4_nvl_sig_lt1)
+sumario_modelo_v4.1 <- summary(modelo_v4.1)
+r_squared_v4.1 <- sumario_modelo_v4.1$r.squared
+fstatistics_v4.1 <- sumario_modelo_v4.1$fstatistic
+sumario_modelo_v4.1
+
+
+
 
 
 # Análise dos resíduos de treino
@@ -151,6 +168,14 @@ dev.off()
 ggplot(res_modelo_v2, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
 # O modelo previu notas abaixo de zero, o que não é possível
 
+# Modelo V4
+res_modelo_v4.1 <- as.data.frame(resid(modelo_v4.1))
+colnames(res_modelo_v4.1) <- 'res'
+
+dev.off()
+ggplot(res_modelo_v4.1, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
+# O modelo previu notas abaixo de zero, o que não é possível
+
 
 # Medidas de Diagnóstico
 # Plot Diagnostics for an lm Object
@@ -159,6 +184,8 @@ par(mfrow = c(2,2))
 plot(modelo_v1)
 plot(modelo_v2)
 plot(modelo_v3)
+plot(modelo_v4.1)
+
 
 # https://data.library.virginia.edu/diagnostic-plots/
 # http://analyticspro.org/2016/03/07/r-tutorial-how-to-use-diagnostic-plots-for-regression-models/ 
@@ -213,4 +240,18 @@ sst_v3 <- sum((mean(df$G3) - resultados_v3$Observado)^2)
 R2_v3 <- 1-sse_v3/sst_v3
 R2_v3
 # Desempenho modelo_v2: 0.7981727
+
+# Predicao_v4
+predicao_v4 <- predict(modelo_v4, df_teste4)
+sumario_predicao_v4 <- summary(predicao_v4)
+resultados_v4 <- cbind(predicao_v4, df_teste4$G3)
+colnames(resultados_v4) <- c('Predito','Observado')
+resultados_v4 <- as.data.frame(resultados_v4)
+
+# Desempenho do Modelo
+sse_v4 <- sum((resultados_v3$Predito - resultados_v3$Observado)^2)
+sst_v4 <- sum((mean(df$G3) - resultados_v4$Observado)^2)
+R2_v4 <- 1-sse_v4/sst_v4
+R2_v4
+# Desempenho modelo_v2: 0.7821376
 
