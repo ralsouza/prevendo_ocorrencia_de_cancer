@@ -88,6 +88,13 @@ df_teste3 <- dplyr::anti_join(df, df_treino3, by = 'index')
 df_treino3$index <- NULL
 df_teste3$index <- NULL
 
+# Modelo V4
+df_treino4 <- df %>% dplyr::sample_frac(.60)
+df_teste4 <- dplyr::anti_join(df, df_treino4, by = 'index')
+# Remoção do indice
+df_treino4$index <- NULL
+df_teste4$index <- NULL
+
 
 # Treinamento dos modelos
 # Modelo V1
@@ -110,6 +117,13 @@ sumario_modelo_v3 <- summary(modelo_v3)
 r_squared_v3 <- sumario_modelo_v3$r.squared
 fstatistics_v3 <- sumario_modelo_v3$fstatistic
 sumario_modelo_v3
+
+# Modelo V4
+modelo_v4 <- lm(G3 ~., data = df_treino4)
+sumario_modelo_v4 <- summary(modelo_v4)
+r_squared_v4 <- sumario_modelo_v4$r.squared
+fstatistics_v4 <- sumario_modelo_v4$fstatistic
+sumario_modelo_v4
 
 
 # Análise dos resíduos de treino
