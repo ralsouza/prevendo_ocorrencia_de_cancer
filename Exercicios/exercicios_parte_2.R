@@ -67,29 +67,46 @@ ggplot(df,aes(absences, fill=..count..)) + geom_histogram(bins = 20)
 df$index <- 1:nrow(df)
 
 # Divisão do data frame
+# Modelo V1
 df_treino1 <- df %>% dplyr::sample_frac(.75)
 df_teste1 <- dplyr::anti_join(df, df_treino1, by = 'index')
-
-df_treino2 <- df %>% dplyr::sample_frac(.80)
-df_teste2 <- dplyr::anti_join(df, df_treino2, by = 'index')
-
-
-
-
-# Remoção do indice nos novos data frames
+# Remoção do indice
 df_treino1$index <- NULL
 df_teste1$index <- NULL
 
+# Modelo V2
+df_treino2 <- df %>% dplyr::sample_frac(.80)
+df_teste2 <- dplyr::anti_join(df, df_treino2, by = 'index')
+# Remoção do indice
+df_treino2$index <- NULL
+df_teste2$index <- NULL
+
+
 # Treinamento dos modelos
+# Modelo V1
 modelo_v1 <- lm(G3 ~., data = df_treino1)
 sumario_modelo_v1 <- summary(modelo_v1)
-r_squared_v1 <- sumario_v1$r.squared
-fstatistics_v1 <- sumario_v1$fstatistic
+r_squared_v1 <- sumario_modelo_v1$r.squared
+fstatistics_v1 <- sumario_modelo_v1$fstatistic
 sumario_v1
 
+# Modelo V2
+modelo_v2 <- lm(G3 ~., data = df_treino2)
+sumario_modelo_v2 <- summary(modelo_v2)
+r_squared_v2 <- sumario_modelo_v2$r.squared
+fstatistics_v2 <- sumario_modelo_v2$fstatistic
+sumario_modelo_v2
+
+
+
 # Análise dos resíduos de treino
+# Modelo V1
 res_modelo_v1 <- as.data.frame(resid(modelo_v1))
 colnames(res_modelo_v1) <- 'res'
+
+# Modelo V2
+res_modelo_v2 <- as.data.frame(resid(modelo_v2))
+colnames(res_modelo_v2) <- 'res'
 
 dev.off()
 ggplot(res_modelo_v1, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
@@ -100,6 +117,7 @@ ggplot(res_modelo_v1, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
 ?plot.lm
 par(mfrow = c(2,2))
 plot(modelo_v1)
+plot(modelo_v2)
 
 # https://data.library.virginia.edu/diagnostic-plots/
 # http://analyticspro.org/2016/03/07/r-tutorial-how-to-use-diagnostic-plots-for-regression-models/ 
@@ -126,6 +144,20 @@ sst_v1 <- sum((mean(df$G3) - resultados_v1$Observado)^2)
 R2_v1 <- 1-sse_v1/sst_v1
 R2_v1
 # Desempenho modelo_v1: 0.7646619
+
+# Predicao_v2
+predicao_v2 <- predict(modelo_v2, df_teste2)
+sumario_predicao_v2 <- summary(predicao_v2)
+resultados_v2 <- cbind(predicao_v2, df_teste2$G3)
+colnames(resultados_v2) <- c('Predito','Observado')
+resultados_v2 <- as.data.frame(resultados_v2)
+
+# Desempenho do Modelo
+sse_v2 <- sum((resultados_v2$Predito - resultados_v2$Observado)^2)
+sst_v2 <- sum((mean(df$G3) - resultados_v2$Observado)^2)
+R2_v2 <- 1-sse_v2/sst_v2
+R2_v2
+# Desempenho modelo_v2: 0.7767996
 
 
 
