@@ -9,6 +9,7 @@ setwd("/Users/ls_rafael/Documents/GitHub/prevendo_ocorrencia_de_cancer/Exercicio
 # Dataset com dados de estudantes
 # Vamos prever a nota final (grade) dos alunos
 
+# Setup Libraries 
 # install.packages("ggplot2")
 # install.packages("ggthemes")
 # install.packages("dplyr")
@@ -16,6 +17,7 @@ library(ggplot2)
 library(ggthemes)
 library(dplyr)
 library(psych)
+library(gmodels)
 
 # Carregando o dataset
 df <- read.csv2('estudantes.csv')
@@ -185,5 +187,7 @@ View(predicao_v1)
 
 predicao_v2 <- predict(modelo_v1.3,df_teste3)
 View(predicao_v2)
+
+
 
 
