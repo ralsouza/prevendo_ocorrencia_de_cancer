@@ -275,7 +275,7 @@ sse_v1 <- sum((resultados_v1$Predito - resultados_v1$Observado)^2)
 sst_v1 <- sum((mean(df$G3) - resultados_v1$Observado)^2)
 R2_v1 <- 1-(sse_v1/sst_v1)
 R2_v1
-# Desempenho modelo_v1 antes do tratamento dos números negativos: 0.8626407
+# Desempenho modelo_v1 depois do tratamento dos números negativos: 0.8626407
 
 # Predicao_v2
 predicao_v2 <- predict(modelo_v2, df_teste2)
