@@ -95,6 +95,12 @@ df_teste4 <- dplyr::anti_join(df, df_treino4, by = 'index')
 df_treino4$index <- NULL
 df_teste4$index <- NULL
 
+# Modelo V5
+df_treino5 <- df %>% dplyr::sample_frac(.70)
+df_teste5 <- dplyr::anti_join(df, df_treino5, by = 'index')
+# Remoção do indice
+df_treino5$index <- NULL
+df_teste5$index <- NULL
 
 # Treinamento dos modelos
 # Modelo V1
@@ -139,9 +145,12 @@ r_squared_v4.1 <- sumario_modelo_v4.1$r.squared
 fstatistics_v4.1 <- sumario_modelo_v4.1$fstatistic
 sumario_modelo_v4.1
 
-
-
-
+# Modelo V5
+modelo_v5 <- lm(G3 ~., data = df_treino5)
+sumario_modelo_v5 <- summary(modelo_v5)
+r_squared_v5 <- sumario_modelo_v5
+fstatistics_v5 <- sumario_modelo_v5$fstatistic
+sumario_modelo_v5
 
 # Análise dos resíduos de treino
 # Modelo V1
@@ -176,6 +185,15 @@ dev.off()
 ggplot(res_modelo_v4.1, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
 # O modelo previu notas abaixo de zero, o que não é possível
 
+# Modelo V5
+res_modelo_v5 <- as.data.frame(resid(modelo_v5))
+colnames(res_modelo_v5) <- 'res'
+
+dev.off()
+ggplot(res_modelo_v5, aes(res, fill = ..count..)) + geom_histogram(bins = 30)
+# O modelo previu notas abaixo de zero, o que não é possível
+
+
 
 # Medidas de Diagnóstico
 # Plot Diagnostics for an lm Object
@@ -185,6 +203,7 @@ plot(modelo_v1)
 plot(modelo_v2)
 plot(modelo_v3)
 plot(modelo_v4.1)
+plot(modelo_v5)
 
 
 # https://data.library.virginia.edu/diagnostic-plots/
@@ -199,19 +218,40 @@ plot(modelo_v4.1)
 
 #### 3. Execução das Predições ####
 
-# Predicao_v1
+# Função para tratar os valores negativos, as novas que forem negativas, serão alteradas para zero
+tratar_zeros <- function(x){
+  if(x < 0 ){
+    return(0)
+  }else{
+    return(x)
+  }
+}
+
+# Predicao_v1 - Este modelo trouxe o melhor resultado, então o trabalho se focará neste modelo
 predicao_v1 <- predict(modelo_v1, df_teste1)
 sumario_predicao_v1 <- summary(predicao_v1)
 resultados_v1 <- cbind(predicao_v1, df_teste1$G3)
 colnames(resultados_v1) <- c('Predito','Observado')
 resultados_v1 <- as.data.frame(resultados_v1)
+min(resultados_v1$Predito) # Ainda existem os valores negativos
 
-# Desempenho do Modelo
+# Desempenho do modelo_v1 antes do tratamento dos números negativos
 sse_v1 <- sum((resultados_v1$Predito - resultados_v1$Observado)^2)
 sst_v1 <- sum((mean(df$G3) - resultados_v1$Observado)^2)
 R2_v1 <- 1-sse_v1/sst_v1
 R2_v1
-# Desempenho modelo_v1: 0.8306656
+# Desempenho modelo_v1 antes do tratamento dos números negativos: 0.8306656
+
+# Tratamento das notas menores que zero no modelo_v1
+resultados_v1$Predito <- sapply(resultados_v1$Predito, tratar_zeros)
+min(resultados_v1$Predito)
+
+# Desempenho do modelo_v1 após o tratamento dos números negativos
+sse_v1 <- sum((resultados_v1$Predito - resultados_v1$Observado)^2)
+sst_v1 <- sum((mean(df$G3) - resultados_v1$Observado)^2)
+R2_v1 <- 1-(sse_v1/sst_v1)
+R2_v1
+# Desempenho modelo_v1 antes do tratamento dos números negativos: 0.8346144
 
 # Predicao_v2
 predicao_v2 <- predict(modelo_v2, df_teste2)
@@ -254,4 +294,18 @@ sst_v4 <- sum((mean(df$G3) - resultados_v4$Observado)^2)
 R2_v4 <- 1-sse_v4/sst_v4
 R2_v4
 # Desempenho modelo_v2: 0.7821376
+
+# Predicao_v5
+predicao_v5 <- predict(modelo_v5, df_teste5)
+sumario_predicao_v5 <- summary(predicao_v5)
+resultados_v5 <- cbind(predicao_v5, df_teste5$G3)
+colnames(resultados_v5) <- c('Predito','Observado')
+resultados_v5 <- as.data.frame(resultados_v5)
+
+# Desempenho do Modelo
+sse_v5 <- sum((resultados_v5$Predito - resultados_v5$Observado)^2)
+sst_v5 <- sum((mean(df$G3) - resultados_v5$Observado)^2)
+R2_v5 <- 1-sse_v5/sst_v5
+R2_v5
+# Desempenho modelo_v2: 0.7671282
 
