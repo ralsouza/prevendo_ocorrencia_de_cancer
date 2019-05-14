@@ -227,20 +227,44 @@ tratar_zeros <- function(x){
   }
 }
 
+# Função para calcular o MAPE - Mean Absolute Percentage Error
+mape <- function(obs,pred){
+  # obs: valores observados
+  # pred: valores preditos
+  (mean(abs((obs-pred)/pred)))*100
+}
+
 # Predicao_v1 - Este modelo trouxe o melhor resultado, então o trabalho se focará neste modelo
-predicao_v1 <- predict(modelo_v1, df_teste1)
-sumario_predicao_v1 <- summary(predicao_v1)
-resultados_v1 <- cbind(predicao_v1, df_teste1$G3)
-colnames(resultados_v1) <- c('Predito','Observado')
-resultados_v1 <- as.data.frame(resultados_v1)
-min(resultados_v1$Predito) # Ainda existem os valores negativos
+# Predição dados de Teste
+predicao_teste_v1 <- predict(modelo_v1, df_teste1)
+sumario_predicao_teste_v1 <- summary(predicao_teste_v1)
+resultados_predicao_teste_v1 <- cbind(predicao_teste_v1, df_teste1$G3)
+colnames(resultados_predicao_teste_v1) <- c('Predito','Observado')
+resultados_predicao_teste_v1 <- as.data.frame(resultados_predicao_teste_v1)
+min(resultados_predicao_teste_v1$Predito) # Ainda existem os valores negativos
+
+# Predição dados de Treino
+predicao_treino_v1 <- predict(modelo_v1, df_treino1)
+sumario_predicao_treino_v1 <- summary(predicao_treino_v1)
+resultados_predicao_treino_v1 <- cbind(predicao_treino_v1, df_treino1$G3)
+colnames(resultados_predicao_treino_v1) <- c('Predito','Observado')
+resultados_predicao_treino_v1 <- as.data.frame(resultados_predicao_treino_v1)
+min(resultados_predicao_treino_v1$Predito) # Ainda existem os valores negativos
 
 # Desempenho do modelo_v1 antes do tratamento dos números negativos
 sse_v1 <- sum((resultados_v1$Predito - resultados_v1$Observado)^2)
 sst_v1 <- sum((mean(df$G3) - resultados_v1$Observado)^2)
 R2_v1 <- 1-sse_v1/sst_v1
 R2_v1
-# Desempenho modelo_v1 antes do tratamento dos números negativos: 0.8306656
+# Desempenho modelo_v1 antes do tratamento dos números negativos: 0.8573597
+
+# Teste MAPE
+# Data set de treino
+mape_df_teste_v1 <- mape(resultados_predicao_teste_v1$Observado,resultados_predicao_teste_v1$Predito)
+
+# Data set de teste
+mape_df_treino_v1 <- mape(resultados_predicao_treino_v1$Observado,resultados_predicao_treino_v1$Predito)
+
 
 # Tratamento das notas menores que zero no modelo_v1
 resultados_v1$Predito <- sapply(resultados_v1$Predito, tratar_zeros)
@@ -251,7 +275,7 @@ sse_v1 <- sum((resultados_v1$Predito - resultados_v1$Observado)^2)
 sst_v1 <- sum((mean(df$G3) - resultados_v1$Observado)^2)
 R2_v1 <- 1-(sse_v1/sst_v1)
 R2_v1
-# Desempenho modelo_v1 antes do tratamento dos números negativos: 0.8346144
+# Desempenho modelo_v1 antes do tratamento dos números negativos: 0.8626407
 
 # Predicao_v2
 predicao_v2 <- predict(modelo_v2, df_teste2)
