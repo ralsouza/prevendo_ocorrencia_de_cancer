@@ -277,6 +277,7 @@ R2_v1 <- 1-(sse_v1/sst_v1)
 R2_v1
 # Desempenho modelo_v1 depois do tratamento dos números negativos: 0.8626407
 
+
 # Predicao_v2
 predicao_v2 <- predict(modelo_v2, df_teste2)
 sumario_predicao_v2 <- summary(predicao_v2)
