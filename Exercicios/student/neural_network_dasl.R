@@ -13,6 +13,7 @@ library(MASS)
 library(caTools)
 
 #### Carga dos Dados ####
+
 # Descrição variáveis do dataset:
 # https://cran.r-project.org/web/packages/MASS/MASS.pdf, página 20 
 #   crim: per capita crime rate by town.
@@ -33,6 +34,7 @@ library(caTools)
 df <- Boston
 
 #### Análise Exploratória ####
+
 head(df)
 str(df)
 summary(df)
