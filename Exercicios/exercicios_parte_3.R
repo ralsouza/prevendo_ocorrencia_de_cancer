@@ -15,12 +15,10 @@ getwd()
 #### Library Setup ####
 # install.packages('caTools')
 # install.packages('MASS')
-# install.packages("dplyr")
 # install.packages('psych')
 
 library(neuralnet)
 library(MASS)
-library(dplyr)
 library(psych)
 
 #### Carga dos Dados ####
@@ -58,15 +56,14 @@ cor.plot(df, numbers = TRUE)
 
 #### Seleção de Amostras para Treino e Teste ####
 
-# Inclusão do indice para divisão
-df$index <- 1:nrow(df)
+# Definição do indice para divisão 70/30
+index <- sample(1:nrow(df), round(0.70 * nrow(df)))
 
 # Divisão dos Datasets
-?sample_frac
 
-# Versão 1 - Divisão 70/30
-df_treino_v1 <- df %>% dplyr::sample_frac(.70)
-df_teste_v1 <- dplyr::anti_join(df, df_treino_v1, by = 'index')
+# Versão 1
+df_treino_v1 <- df[index, ]
+df_teste_v1  <- df[-index, ]
 
 # Remoção dos Indices
 df_treino_v1$index <- NULL
@@ -83,13 +80,20 @@ pr_fit_v1 <- predict(lm_fit_v1, df_teste_v1)
 mse_lm_v1 <- sum((pr_fit_v1 - df_teste_v1$medv)^2)/nrow(df_teste_v1) # 22.16%
 
 #### Normalização dos Dados ####
-# Será usada a técnica de escala min-max (min-max scale)
+# Redes neurais não são tão fáceis de treinar e ajustar, então alguma preparação é necessária
+# Será usada a técnica de normalização min-max (min-max scale)
 # Normalmente escalando os dados em intervalos [0,1] ou [-1,1] tende a dar resultados melhores
 
+# Nomalizar e Dividir os Dados
+maxs <- apply(df, 2, max)
+mins <- apply(df, 2, min)
+
+df_norm <- as.data.frame(scale(df, center = mins, scale = maxs - mins))
 
 
 
-
+train <- df[index,]
+test <- df[-index,]
 
 
 
