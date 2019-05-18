@@ -7,6 +7,8 @@ setwd('/Users/ls_rafael/Documents/GitHub/prevendo_ocorrencia_de_cancer/Exercicio
 
 #### Library Setup ####
 # install.packages('caTools')
+# install.packages('MASS')
+# install.packages('caTools')
 
 library(neuralnet)
 library(MASS)
@@ -25,11 +27,11 @@ library(caTools)
 #   age: proportion of owner-occupied units built prior to 1940.
 #   dis: weighted mean of distances to five Boston employment centres. 
 #   rad: index of accessibility to radial highways.
-#   tax: full-value property-tax rate per \$10,000.
+#   tax: full-value property-tax rate per $10,000.
 #   ptratio: pupil-teacher ratio by town.
 #   black: 1000(Bk − 0.63)2 where Bk is the proportion of blacks by town. 
 #   lstat: lower status of the population (percent).
-#   medv: median value of owner-occupied homes in \$1000s.
+#   medv: median value of owner-occupied homes in $1,000.
 
 df <- Boston
 
