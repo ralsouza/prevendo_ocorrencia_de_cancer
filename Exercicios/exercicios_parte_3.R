@@ -61,9 +61,40 @@ cor.plot(df, numbers = TRUE)
 # Inclusão do indice para divisão
 df$index <- 1:nrow(df)
 
-df_treino_v2 <- df %>% dplyr::sample_frac(.70)
-df_teste_v2 <- dplyr::anti_join(df, amostra_treino_v2, by = 'index')
+# Divisão dos Datasets
+?sample_frac
 
-# Seleção dos dados de Treino
-df_treino_v1 = subset(df, amostra_treino_v1 == TRUE)
-df_teste_v1 = subset(df,amostra_treino_v1 == FALSE)
+# Versão 1 - Divisão 70/30
+df_treino_v1 <- df %>% dplyr::sample_frac(.70)
+df_teste_v1 <- dplyr::anti_join(df, df_treino_v1, by = 'index')
+
+# Remoção dos Indices
+df_treino_v1$index <- NULL
+df_teste_v1$index <- NULL
+
+# Criação do Modelo Linear para Comparação
+lm_fit_v1 <- glm(medv ~., data = df_treino_v1)
+summary(lm_fit_v1)
+
+# Predição do Modelo Linear
+pr_fit_v1 <- predict(lm_fit_v1, df_teste_v1)
+
+# Medida de quão longe as previsões estão longe dos dados reais usando MSE - valores próximos de zero são melhores
+mse_lm_v1 <- sum((pr_fit_v1 - df_teste_v1$medv)^2)/nrow(df_teste_v1) # 22.16%
+
+#### Normalização dos Dados ####
+# Será usada a técnica de escala min-max (min-max scale)
+# Normalmente escalando os dados em intervalos [0,1] ou [-1,1] tende a dar resultados melhores
+
+
+
+
+
+
+
+
+
+
+
+
+
