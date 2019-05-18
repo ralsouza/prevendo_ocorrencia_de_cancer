@@ -9,16 +9,19 @@ getwd()
 # The Boston Housing Dataset
 # http://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html
 
-# O modelo deve prever a MEDV (Valor da Mediana de ocupação das casas). Utilize um modelo de rede neural!
+# O modelo deve prever a MEDV (Valor da Mediana de ocupação das casas). 
+# Utilize um modelo de rede neural!
 
 #### Library Setup ####
 # install.packages('caTools')
 # install.packages('MASS')
-# install.packages('caTools')
+# install.packages("dplyr")
+# install.packages('psych')
 
 library(neuralnet)
 library(MASS)
-library(caTools)
+library(dplyr)
+library(psych)
 
 #### Carga dos Dados ####
 
@@ -50,3 +53,17 @@ any(is.na(df))
 
 plot(df$medv)
 hist(df$medv)
+
+cor.plot(df, numbers = TRUE)
+
+#### Seleção de Amostras para Treino e Teste ####
+
+# Inclusão do indice para divisão
+df$index <- 1:nrow(df)
+
+df_treino_v2 <- df %>% dplyr::sample_frac(.70)
+df_teste_v2 <- dplyr::anti_join(df, amostra_treino_v2, by = 'index')
+
+# Seleção dos dados de Treino
+df_treino_v1 = subset(df, amostra_treino_v1 == TRUE)
+df_teste_v1 = subset(df,amostra_treino_v1 == FALSE)
