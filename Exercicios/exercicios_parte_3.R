@@ -52,7 +52,12 @@ summary(df)
 any(is.na(df))
 
 plot(df$medv)
-hist(df$medv)
+
+hist(df$medv, 
+     xlab = 'MEDV', 
+     ylab = 'Frequencia', 
+     main = 'Histograma MEDV', 
+     col  = 'lightblue')
 
 cor.plot(df, numbers = TRUE)
 
@@ -97,13 +102,13 @@ df_treino_norm_v1 <- as.data.frame(scale(df_treino_v1, center = mins, scale = ma
 summary(df_treino_norm_v1)
 
 # Teste
-maxs <- apply(df_teste_v1, 2, max)
-mins <- apply(df_teste_v1, 2, min)
+maxs_v1 <- apply(df_teste_v1, 2, max)
+mins_v1 <- apply(df_teste_v1, 2, min)
 
-df_teste_norm_v1 <- as.data.frame(scale(df_teste_v1, center = mins, scale = maxs - mins))
+df_teste_norm_v1 <- as.data.frame(scale(df_teste_v1, center = mins_v1, scale = maxs_v1 - mins_v1))
 summary(df_teste_norm_v1)
 
-
+#### Treinamento do Modelo #### 
 
 
 
