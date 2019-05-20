@@ -127,7 +127,6 @@ dim(df_teste_norm_v1)
 pred_nn_v1 <- predict(nn_v1, df_teste_norm_v1[ ,1:13])
 summary(pred_nn_v1)
 
-
 # A predição será com os dados normalizados, é necessário redimensionar
 # para o estado natural
 pred_nn_v1 <- pred_nn_v1*(max(df$medv) - min(df$medv)) + min(df$medv)+min(df$medv)
@@ -135,7 +134,7 @@ test_r_v1 <- (df_teste_norm_v1$medv)*(max(df$medv)-min(df$medv))+min(df$medv)
 
 mse_nn_v1 <- sum((test_r_v1 - pred_nn_v1)^2)/nrow(df_teste_norm_v1)
 
-# Comparação dos dois MSEs do modelo linear e neural
+#### Comparação dos dois MSEs do modelo linear e neural ####
 print(paste(mse_lm_v1, mse_nn_v1))
 
 # Plots de Comparação entre os Modelos
@@ -148,8 +147,6 @@ legend('bottomright',legend='NN',pch=18,col='red', bty='n')
 plot(df_teste_v1$medv,pr_fit_v1,col='blue',main='Real vs Predito - Modelo Linear',pch=18, cex=0.7)
 abline(0,1,lwd=2)
 legend('bottomright',legend='LM',pch=18,col='blue', bty='n', cex=.95)
-
-
 
 # Comparação em um plot
 plot(df_teste_v1$medv,pred_nn_v1,col='red',main='Real vs Predito - NN e LM',pch=18,cex=0.7)
