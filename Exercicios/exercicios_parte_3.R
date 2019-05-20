@@ -9,6 +9,9 @@ getwd()
 # The Boston Housing Dataset
 # http://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html
 
+# Tutorial
+# https://www.r-bloggers.com/fitting-a-neural-network-in-r-neuralnet-package/
+
 # O modelo deve prever a MEDV (Valor da Mediana de ocupação das casas). 
 # Utilize um modelo de rede neural!
 
@@ -135,9 +138,24 @@ mse_nn_v1 <- sum((test_r_v1 - pred_nn_v1)^2)/nrow(df_teste_norm_v1)
 # Comparação dos dois MSEs do modelo linear e neural
 print(paste(mse_lm_v1, mse_nn_v1))
 
+# Plots de Comparação entre os Modelos
+par(mfrow=c(1,2))
+
+plot(df_teste_v1$medv,pred_nn_v1,col='red',main='Real vs Predito - Rede Neural',pch=18,cex=0.7)
+abline(0,1,lwd=2)
+legend('bottomright',legend='NN',pch=18,col='red', bty='n')
+
+plot(df_teste_v1$medv,pr_fit_v1,col='blue',main='Real vs Predito - Modelo Linear',pch=18, cex=0.7)
+abline(0,1,lwd=2)
+legend('bottomright',legend='LM',pch=18,col='blue', bty='n', cex=.95)
 
 
 
+# Comparação em um plot
+plot(df_teste_v1$medv,pred_nn_v1,col='red',main='Real vs Predito - NN e LM',pch=18,cex=0.7)
+points(df_teste_v1$medv,pr_fit_v1,col='blue',pch=18,cex=0.7)
+abline(0,1,lwd=2)
+legend('bottomright',legend=c('NN','LM'),pch=18,col=c('red','blue'))
 
 
 
