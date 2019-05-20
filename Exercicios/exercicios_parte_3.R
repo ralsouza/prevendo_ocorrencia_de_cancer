@@ -116,9 +116,25 @@ plot(nn_v1)
 
 #### Predição MEDV (Valor da Mediana de ocupação das casas) ####
 dim(df_teste_norm_v1)
+
 # Computar os dados apenas das variáveis preditoras, desconsiderando
 # a variável alvo dos testes
-pred_nn_v1 <- compute(nn, df_teste_norm_v1[ ,1:13])
+?predict.nn
+
+pred_nn_v1 <- predict(nn_v1, df_teste_norm_v1[ ,1:13])
+summary(pred_nn_v1)
+
+
+# A predição será com os dados normalizados, é necessário redimensionar
+# para o estado natural
+pred_nn_v1 <- pred_nn_v1*(max(df$medv) - min(df$medv)) + min(df$medv)+min(df$medv)
+test_r_v1 <- (df_teste_norm_v1$medv)*(max(df$medv)-min(df$medv))+min(df$medv)
+
+mse_nn_v1 <- sum((test_r_v1 - pred_nn_v1)^2)/nrow(df_teste_norm_v1)
+
+# Comparação dos dois MSEs do modelo linear e neural
+print(paste(mse_lm_v1, mse_nn_v1))
+
 
 
 
