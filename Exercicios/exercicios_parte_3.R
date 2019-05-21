@@ -25,6 +25,7 @@ library(neuralnet)
 library(MASS)
 library(dplyr)
 library(psych)
+library(ggplot2)
 
 #### Carga dos Dados ####
 
@@ -151,16 +152,31 @@ summary(pred_nn_v2)
 
 # A predição será com os dados normalizados, é necessário redimensionar
 # para o estado natural
+# Versão 1
 pred_nn_v1 <- pred_nn_v1*(max(df$medv) - min(df$medv)) + min(df$medv)+min(df$medv)
 test_r_v1 <- (df_teste_norm_v1$medv)*(max(df$medv)-min(df$medv))+min(df$medv)
 
+# Mean Squared Error
 mse_nn_v1 <- sum((test_r_v1 - pred_nn_v1)^2)/nrow(df_teste_norm_v1)
 
+# Erros de previsao
+error_df_v1 <- data.frame(test_r_v1, pred_nn_v1)
+head(error_df_v1)
 
+# Plot dos erros
+ggplot(error_df_v1, aes(x = test_r_v1,y = pred_nn_v1)) + 
+  geom_point() + stat_smooth()
+
+# Versão 2
 pred_nn_v2 <- pred_nn_v2*(max(df$medv) - min(df$medv)) + min(df$medv)+min(df$medv)
 test_r_v2 <- (df_teste_norm_v2$medv)*(max(df$medv)-min(df$medv))+min(df$medv)
 
+# Mean Squared Error
 mse_nn_v2 <- sum((test_r_v2 - pred_nn_v2)^2)/nrow(df_teste_norm_v2)
+
+# Erros de previsao
+error_df_v2 <- data.frame(test_r_v2, pred_nn_v2)
+head(error_df_v2)
 
 #### Comparação dos dois MSEs do modelo linear e neural ####
 print(paste(mse_lm_v1, mse_nn_v1))
