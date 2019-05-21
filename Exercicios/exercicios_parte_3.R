@@ -76,6 +76,11 @@ df$index <- 1:nrow(df)
 df_treino_v1 <- df %>% dplyr::sample_frac(.70)
 df_teste_v1 <- dplyr::anti_join(df, df_treino_v1, by = 'index')
 
+# Versão 2 - Outra técnica de divisão (Mais interessante)
+df_treino_v2_idx <- sample(nrow(df), 2/3 * nrow(df))
+df_treino_v2 <- df[ df_treino_v2_idx, ]
+df_teste_v2  <- df[-df_treino_v2_idx, ]
+
 # Remoção dos Indices
 df_treino_v1$index <- NULL
 df_teste_v1$index <- NULL
@@ -85,11 +90,17 @@ df$index <- NULL
 lm_fit_v1 <- glm(medv ~., data = df_treino_v1)
 summary(lm_fit_v1)
 
+lm_fit_v2 <- glm(medv ~., data = df_treino_v2)
+summary(lm_fit_v2)
+
+
 # Predição do Modelo Linear
 pr_fit_v1 <- predict(lm_fit_v1, df_teste_v1)
+pr_fit_v2 <- predict(lm_fit_v2, df_teste_v2)
 
 # Medida de quão longe as previsões estão longe dos dados reais usando MSE - valores próximos de zero são melhores
 mse_lm_v1 <- sum((pr_fit_v1 - df_teste_v1$medv)^2)/nrow(df_teste_v1) # 15.18%
+mse_lm_v2 <- sum((pr_fit_v2 - df_teste_v2$medv)^2)/nrow(df_teste_v2) # 27.02%
 
 #### Normalização dos Dados ####
 # Pode ser feito como pre-processamento
@@ -102,23 +113,31 @@ mse_lm_v1 <- sum((pr_fit_v1 - df_teste_v1$medv)^2)/nrow(df_teste_v1) # 15.18%
 maxs <- apply(df_treino_v1, 2, max)
 mins <- apply(df_treino_v1, 2, min)
 
-df_treino_norm_v1 <- as.data.frame(scale(df_treino_v1, center = mins, scale = maxs - mins))
-summary(df_treino_norm_v1)
+maxs_v2 <- apply(df_treino_v2, 2, max)
+mins_v2 <- apply(df_treino_v2, 2, min)
+
+df_treino_norm_v2 <- as.data.frame(scale(df_treino_v2, center = mins_v2, scale = maxs_v2 - mins_v2))
+summary(df_treino_norm_v2)
 
 # Teste
 maxs_v1 <- apply(df_teste_v1, 2, max)
 mins_v1 <- apply(df_teste_v1, 2, min)
 
-df_teste_norm_v1 <- as.data.frame(scale(df_teste_v1, center = mins_v1, scale = maxs_v1 - mins_v1))
-summary(df_teste_norm_v1)
+maxs_v2 <- apply(df_teste_v2, 2, max)
+mins_v2 <- apply(df_teste_v2, 2, min)
+
+df_teste_norm_v2 <- as.data.frame(scale(df_teste_v2, center = mins_v2, scale = maxs_v2 - mins_v2))
+summary(df_teste_norm_v2)
 
 #### Treinamento do Modelo #### 
-nn_v1 <- neuralnet(medv ~., data = df_treino_norm_v1, hidden = c(5,3), linear.output = TRUE)
+nn_v2 <- neuralnet(medv ~., data = df_treino_norm_v2, hidden = c(5,3), linear.output = TRUE)
 
 plot(nn_v1)
+plot(nn_v2)
 
 #### Predição MEDV (Valor da Mediana de ocupação das casas) ####
 dim(df_teste_norm_v1)
+dim(df_teste_norm_v2)
 
 # Computar os dados apenas das variáveis preditoras, desconsiderando
 # a variável alvo dos testes
@@ -127,6 +146,9 @@ dim(df_teste_norm_v1)
 pred_nn_v1 <- predict(nn_v1, df_teste_norm_v1[ ,1:13])
 summary(pred_nn_v1)
 
+pred_nn_v2 <- predict(nn_v2, df_teste_norm_v2[ ,1:13])
+summary(pred_nn_v2)
+
 # A predição será com os dados normalizados, é necessário redimensionar
 # para o estado natural
 pred_nn_v1 <- pred_nn_v1*(max(df$medv) - min(df$medv)) + min(df$medv)+min(df$medv)
@@ -134,12 +156,20 @@ test_r_v1 <- (df_teste_norm_v1$medv)*(max(df$medv)-min(df$medv))+min(df$medv)
 
 mse_nn_v1 <- sum((test_r_v1 - pred_nn_v1)^2)/nrow(df_teste_norm_v1)
 
+
+pred_nn_v2 <- pred_nn_v2*(max(df$medv) - min(df$medv)) + min(df$medv)+min(df$medv)
+test_r_v2 <- (df_teste_norm_v2$medv)*(max(df$medv)-min(df$medv))+min(df$medv)
+
+mse_nn_v2 <- sum((test_r_v2 - pred_nn_v2)^2)/nrow(df_teste_norm_v2)
+
 #### Comparação dos dois MSEs do modelo linear e neural ####
 print(paste(mse_lm_v1, mse_nn_v1))
+print(paste(mse_lm_v2, mse_nn_v2))
 
 # Plots de Comparação entre os Modelos
 par(mfrow=c(1,2))
 
+# Plot versão 1
 plot(df_teste_v1$medv,pred_nn_v1,col='red',main='Real vs Predito - Rede Neural',pch=18,cex=0.7)
 abline(0,1,lwd=2)
 legend('bottomright',legend='NN',pch=18,col='red', bty='n')
@@ -154,5 +184,18 @@ points(df_teste_v1$medv,pr_fit_v1,col='blue',pch=18,cex=0.7)
 abline(0,1,lwd=2)
 legend('bottomright',legend=c('NN','LM'),pch=18,col=c('red','blue'))
 
+# Plot versão 2
+plot(df_teste_v2$medv,pred_nn_v2,col='red',main='Real vs Predito - Rede Neural',pch=18,cex=0.7)
+abline(0,1,lwd=2)
+legend('bottomright',legend='NN',pch=18,col='red', bty='n')
 
+plot(df_teste_v2$medv,pr_fit_v2,col='blue',main='Real vs Predito - Modelo Linear',pch=18, cex=0.7)
+abline(0,1,lwd=2)
+legend('bottomright',legend='LM',pch=18,col='blue', bty='n', cex=.95)
+
+# Comparação em um plot
+plot(df_teste_v2$medv,pred_nn_v2,col='red',main='Real vs Predito - NN e LM',pch=18,cex=0.7)
+points(df_teste_v2$medv,pr_fit_v2,col='blue',pch=18,cex=0.7)
+abline(0,1,lwd=2)
+legend('bottomright',legend=c('NN','LM'),pch=18,col=c('red','blue'))
 
