@@ -11,6 +11,8 @@ getwd()
 # Referências: 
 #   https://rstudio-pubs-static.s3.amazonaws.com/228914_7d93c6a33e9d4b61aa0015d801eee23e.html
 #   http://www.rpubs.com/jasonchanhku/ocr
+#   Melhor: 
+#           https://charleshsliao.wordpress.com/2017/03/06/kernels-svm-and-a-letter-recognition-example/ 
 
 ## Explorando e preparando os dados
 letters <- read.csv("letterdata.csv")
@@ -34,6 +36,7 @@ library(kernlab)
 
 # Criando o modelo com o kernel vanilladot
 # https://www.rdocumentation.org/packages/kernlab/versions/0.9-27/topics/ksvm
+?ksvm
 letter_classifier <- ksvm(letter ~., data = letters_treino, kernel = 'vanilladot')
 letter_classifier
 
