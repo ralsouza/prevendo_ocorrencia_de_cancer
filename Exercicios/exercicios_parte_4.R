@@ -38,10 +38,12 @@ letter_classifier <- ksvm(letter ~., data = letters_treino, kernel = 'vanilladot
 letter_classifier
 
 # Predizendo o caracter
-pred_caract <- predict(letter_classifier, letters_teste[ ,2:17])
+pred_caract <- predict(letter_classifier, letters_teste)
 
 # Visualizar Resultados
 head(pred_caract)
-table(pred_caract, letters_teste[ ,17])
+table(pred_caract, letters_teste$letter)
+
+
 
 
