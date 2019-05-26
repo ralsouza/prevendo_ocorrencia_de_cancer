@@ -46,11 +46,12 @@ summary(modelo_v1)
 predict_v1 <- predict(modelo_v1, teste_v1)
 summary(predict_v1)
 
-table(predict_v1, treino_v1$letter)
+# Visualização dos Resultados
+table(predict_v1, teste_v1$letter)
 
-# Visualizar Resultados
-
-
+# Mensuração dos Erros
+erro_v1 <- (sum(predict_v1 != teste_v1$letter) / nrow(teste_v1))
+print(paste0('Precisão da versão 1 com kernel Vanilladot: ', 1 - erro_v1))
 
 
 
