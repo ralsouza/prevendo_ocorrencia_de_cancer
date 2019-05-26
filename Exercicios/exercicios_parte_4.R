@@ -22,11 +22,12 @@ summary(letters)
 head(letters)
 
 # Criando dados de treino e dados de teste
-letters_treino <- letters[1:16000, ]
-letters_teste  <- letters[16001:20000, ]
+treino_idx_v1 <- sample(nrow(letters), 2/3 * nrow(letters))
+treino_v1 <- letters[treino_idx_v1, ]
+teste_v1 <- letters[-treino_idx_v1, ]
 
-dim(letters_treino)
-dim(letters_teste)
+dim(treino_v1)
+dim(teste_v1)
 
 ## Treinando o Modelo
 # Kernlab: https://cran.r-project.org/web/packages/kernlab/index.html
@@ -37,15 +38,18 @@ library(kernlab)
 # Criando o modelo com o kernel vanilladot
 # https://www.rdocumentation.org/packages/kernlab/versions/0.9-27/topics/ksvm
 ?ksvm
-letter_classifier <- ksvm(letter ~., data = letters_treino, kernel = 'vanilladot')
-letter_classifier
+
+modelo_v1 <- ksvm(letter ~., data = treino_v1, kernel = 'vanilladot')
+summary(modelo_v1)
 
 # Predizendo o caracter
-pred_caract <- predict(letter_classifier, letters_teste)
+predict_v1 <- predict(modelo_v1, teste_v1)
+summary(predict_v1)
+
+table(predict_v1, treino_v1$letter)
 
 # Visualizar Resultados
-head(pred_caract)
-table(pred_caract, letters_teste$letter)
+
 
 
 
