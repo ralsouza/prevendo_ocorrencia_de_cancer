@@ -5,7 +5,14 @@ setwd("/Users/ls_rafael/Documents/GitHub/prevendo_ocorrencia_de_cancer/Exercicio
 getwd()
 
 # Definindo o Problema: OCR - Optical Character Recognition
-# Seu modelo deve prever o caracter a partir do dataset fornecido. Use um modelo SVM
+# Seu modelo deve prever o caracter a partir do dataset fornecido. 
+# Ao digitar um caracter, um número ou uma letra, este desenho é na verdade 
+# uma matriz de pixels, que são pequenos pontos desenhados na imagem (caracter). 
+# A ideia de prever o caracter é que o modelo calcule a relacão entre os pixels e 
+# ser capaz de predizer se tal letra é realmente a letra com questão com parando 
+# os dados de treino e testes. Esta é uma atividade de visão computacional.
+
+#Use um modelo SVM
 # Dataset: 
 #   https://archive.ics.uci.edu/ml/datasets/Letter+Recognition
 # Referências: 
@@ -35,23 +42,42 @@ install.packages("kernlab")
 library(kernlab)
 ?kernlab
 
-# Criando o modelo com o kernel vanilladot
+# Criação do modelo
 # https://www.rdocumentation.org/packages/kernlab/versions/0.9-27/topics/ksvm
 ?ksvm
 
+# Modelo com Vanilladot
 modelo_v1 <- ksvm(letter ~., data = treino_v1, kernel = 'vanilladot')
 summary(modelo_v1)
 
+# Modelo com Polydot
+modelo_v2 <- ksvm(letter ~., data = treino_v1, kernel = 'polydot')
+summary(modelo_v2)
+
+# Modelo com Polydot
+modelo_v3 <- ksvm(letter ~., data = treino_v1, kernel = 'rbfdot')
+summary(modelo_v3)
+
 # Predizendo o caracter
+
+# Modelo Versão 1
 predict_v1 <- predict(modelo_v1, teste_v1)
 summary(predict_v1)
 
+# Modelo Versão 2
+predict_v2 <- predict(modelo_v2, teste_v1)
+summary(predict_v2)
+
 # Visualização dos Resultados
 table(predict_v1, teste_v1$letter)
+table(predict_v2, teste_v1$letter)
 
 # Mensuração dos Erros
 erro_v1 <- (sum(predict_v1 != teste_v1$letter) / nrow(teste_v1))
 print(paste0('Precisão da versão 1 com kernel Vanilladot: ', 1 - erro_v1))
+
+erro_v2 <- (sum(predict_v2 != teste_v1$letter) / nrow(teste_v1))
+print(paste0('Precisão da versão 1 com kernel Vanilladot: ', 1 - erro_v2))
 
 
 
