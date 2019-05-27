@@ -12,6 +12,7 @@ getwd()
 # ser capaz de predizer se tal letra é realmente a letra com questão com parando 
 # os dados de treino e testes. Esta é uma atividade de visão computacional.
 # Use um modelo SVM que é uma subcategoria de rede neural.
+
 # Dataset: 
 #   https://archive.ics.uci.edu/ml/datasets/Letter+Recognition
 # Referências: 
@@ -67,16 +68,23 @@ summary(predict_v1)
 predict_v2 <- predict(modelo_v2, teste_v1)
 summary(predict_v2)
 
+# Modelo Versão 3
+predict_v3 <- predict(modelo_v3, teste_v1)
+summary(predict_v3)
+
 # Visualização dos Resultados
 table(predict_v1, teste_v1$letter)
 table(predict_v2, teste_v1$letter)
+table(predict_v3, teste_v1$letter)
 
 # Mensuração dos Erros
 erro_v1 <- (sum(predict_v1 != teste_v1$letter) / nrow(teste_v1))
 print(paste0('Precisão da versão 1 com kernel Vanilladot: ', 1 - erro_v1))
 
 erro_v2 <- (sum(predict_v2 != teste_v1$letter) / nrow(teste_v1))
-print(paste0('Precisão da versão 1 com kernel Vanilladot: ', 1 - erro_v2))
+print(paste0('Precisão da versão 2 com kernel Vanilladot: ', 1 - erro_v2))
 
+erro_v3 <- (sum(predict_v3 != teste_v1$letter) / nrow(teste_v1))
+print(paste0('Precisão da versão 3 com kernel Vanilladot: ', 1 - erro_v3))
 
 
