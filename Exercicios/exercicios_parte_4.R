@@ -11,8 +11,7 @@ getwd()
 # A ideia de prever o caracter é que o modelo calcule a relacão entre os pixels e 
 # ser capaz de predizer se tal letra é realmente a letra com questão com parando 
 # os dados de treino e testes. Esta é uma atividade de visão computacional.
-
-#Use um modelo SVM
+# Use um modelo SVM que é uma subcategoria de rede neural.
 # Dataset: 
 #   https://archive.ics.uci.edu/ml/datasets/Letter+Recognition
 # Referências: 
