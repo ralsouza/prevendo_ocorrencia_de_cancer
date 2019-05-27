@@ -86,5 +86,3 @@ print(paste0('Precisão da versão 2 com kernel Vanilladot: ', 1 - erro_v2))
 
 erro_v3 <- (sum(predict_v3 != teste_v1$letter) / nrow(teste_v1))
 print(paste0('Precisão da versão 3 com kernel Vanilladot: ', 1 - erro_v3))
-
-
