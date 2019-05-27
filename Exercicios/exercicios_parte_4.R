@@ -46,15 +46,15 @@ library(kernlab)
 # https://www.rdocumentation.org/packages/kernlab/versions/0.9-27/topics/ksvm
 ?ksvm
 
-# Modelo com Vanilladot
+# Modelo com Vanilladot - Kernel Linear
 modelo_v1 <- ksvm(letter ~., data = treino_v1, kernel = 'vanilladot')
 summary(modelo_v1)
 
-# Modelo com Polydot
+# Modelo com Polydot - Kernel Polinomial
 modelo_v2 <- ksvm(letter ~., data = treino_v1, kernel = 'polydot')
 summary(modelo_v2)
 
-# Modelo com Polydot
+# Modelo com RBFdot - Kernel Radial (Gaussiano)
 modelo_v3 <- ksvm(letter ~., data = treino_v1, kernel = 'rbfdot')
 summary(modelo_v3)
 
@@ -73,16 +73,26 @@ predict_v3 <- predict(modelo_v3, teste_v1)
 summary(predict_v3)
 
 # Visualização dos Resultados
+# Letras nas linhas representam as predições feitas pelo modelo
+# E as letras nas colunas representam as letras no dataset de treino
 table(predict_v1, teste_v1$letter)
 table(predict_v2, teste_v1$letter)
 table(predict_v3, teste_v1$letter)
 
 # Mensuração dos Erros
 erro_v1 <- (sum(predict_v1 != teste_v1$letter) / nrow(teste_v1))
-print(paste0('Precisão da versão 1 com kernel Vanilladot: ', 1 - erro_v1))
+print(paste0('Precisão da versão 1 com kernel linear (vanilladot): ', 1 - erro_v1))
 
 erro_v2 <- (sum(predict_v2 != teste_v1$letter) / nrow(teste_v1))
-print(paste0('Precisão da versão 2 com kernel Vanilladot: ', 1 - erro_v2))
+print(paste0('Precisão da versão 2 com kernel polinomial (polydot): ', 1 - erro_v2))
 
 erro_v3 <- (sum(predict_v3 != teste_v1$letter) / nrow(teste_v1))
-print(paste0('Precisão da versão 3 com kernel Vanilladot: ', 1 - erro_v3))
+print(paste0('Precisão da versão 3 com kernel RBF (rbfdot): ', 1 - erro_v3))
+
+
+
+
+
+
+
+
